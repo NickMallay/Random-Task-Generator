@@ -9,13 +9,22 @@
 # Display all tasks
 
 
-tasks = [
-    "Learn Python",
-    "Practise Git",
-    "Work on a project",
-    "Take a break"
-]
+def print_task(task_list):
+    print("Your tasks are as follows: ")
+    for task in task_list:
+        print(task)
+tasks = []
 
+print("Welcome to Random Task Generator, a task managment and productivity assistant.")
+print("To begin, enter a task that needs to be done.")
+print("When you are finished type 'DONE'")
 
-for task in tasks:
-    print(task)
+while True:
+    user_input = input()
+    if user_input == "DONE":
+        break 
+    else:
+        tasks.append(user_input)
+
+    
+print_task(tasks)
