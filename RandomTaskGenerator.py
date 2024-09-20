@@ -9,6 +9,13 @@
 # Display all tasks
 
 
+# The stored list of user tasks. Will be populated by the user on start or during use.
+tasks = []
+# List of valid core loop options
+valid_options = ["HELP", "TASKS", "ADD", "STRIKE", "DRAW", "WEIGHT"]
+# Have the user add one or multiple tasks, typing DONE when they are finished. 
+
+
 # Function to get a valid input on a question. Valid lists defined above.
 def get_valid_input(prompt, valid_options):
         while True:
@@ -20,7 +27,7 @@ def get_valid_input(prompt, valid_options):
 #Help function to display all available options from the main loop
 def HELP():
     print("HELP - Display this list of options.\nTASKS - Displays a list of all stored tasks.\nADD - Allows you to add another task.\nSTRIKE - Remove a task from the list.\nDRAW - Picks a task at random for you to do, taking into account weight.\nWEIGHT - Allows you to change the weight of a task.")
-# A function to display all stored tasks, with a label.
+# A function to display all stored tasks, with a label. Indexed, to allow targeted removal
 def print_task(task_list):
     print("Your tasks are as follows: ")
     for index, task in enumerate(task_list, 1):
@@ -37,6 +44,18 @@ def add_task():
         else:
             tasks.append(user_input)
 #Strike function to remove a task from the list
+def STRIKE():
+    if not tasks:
+        print("No tasks to remove.")
+        return
+    print_task(tasks)
+    task_index = int(input("\nWhich task would you like to remove? Please enter the corresponding number."))
+    removed_task = tasks.pop(task_index - 1) # -1 to account for default 0 coungting
+    print(f" {removed_task} has been removed.")
+
+
+
+
 
 #Draw function to pull a random card from a weight adjusted list for the user to do
 #Weight function to change the weight of a task
@@ -70,7 +89,7 @@ while True:
     elif user_action == "ADD":
         add_task()     
     elif user_action == "STRIKE":
-        print("WIP")  
+        STRIKE() 
     elif user_action == "DRAW":
         print("WIP")  
     elif user_action == "WEIGHT":
