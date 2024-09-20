@@ -29,9 +29,12 @@ def HELP():
     print("HELP - Display this list of options.\nTASKS - Displays a list of all stored tasks.\nADD - Allows you to add another task.\nSTRIKE - Remove a task from the list.\nDRAW - Picks a task at random for you to do, taking into account weight.\nWEIGHT - Allows you to change the weight of a task.")
 # A function to display all stored tasks, with a label. Indexed, to allow targeted removal
 def print_task(task_list):
-    print("Your tasks are as follows: ")
-    for index, task in enumerate(task_list, 1):
-        print(f"{index}. {task}")
+    if task_list:
+        print("Your tasks are as follows: ")
+        for index, task in enumerate(task_list, 1):
+            print(f"{index}. {task}")
+    else:
+        print("There are no tasks stored.")
 #Add function to add new tasks to the list
 def add_task():
     while True:
@@ -48,11 +51,17 @@ def STRIKE():
     if not tasks:
         print("No tasks to remove.")
         return
+    
     print_task(tasks)
-    task_index = int(input("\nWhich task would you like to remove? Please enter the corresponding number."))
-    removed_task = tasks.pop(task_index - 1) # -1 to account for default 0 coungting
-    print(f" {removed_task} has been removed.")
-
+    while True:
+        try:
+            task_index = int(input("\nEnter the number of the task you would like to remove.\n"))
+            if task_index >= 1 and task_index <= len(tasks):
+                removed_task = tasks.pop(task_index - 1) # -1 to account for default 0 coungting
+                print(f" {removed_task} has been removed.")
+                break
+        except ValueError:
+            print("Please enter a valid number.")
 
 
 
@@ -81,11 +90,12 @@ while True:
 
 #Core loop. Users can access available functions from here, such as pulling a task, adding a task, checking a help list, etc.
 while True:
-    user_action = get_valid_input("What would you like to do? (Type HELP for a list of options)", valid_options)
+    user_action = get_valid_input("What would you like to do? (Type HELP for a list of options)\n", valid_options)
     if user_action == "HELP":
         HELP()
     elif user_action == "TASKS":
         print_task(tasks)
+        
     elif user_action == "ADD":
         add_task()     
     elif user_action == "STRIKE":
