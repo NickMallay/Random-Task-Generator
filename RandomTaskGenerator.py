@@ -26,7 +26,7 @@ def get_valid_input(prompt, valid_options):
                 print(f"Invalid choice. Please select one of the following: {', '.join(valid_options)}")
 #Help function to display all available options from the main loop
 def HELP():
-    print("HELP - Display this list of options.\nTASKS - Displays a list of all stored tasks.\nADD - Allows you to add another task.\nSTRIKE - Remove a task from the list.\nDRAW - Picks a task at random for you to do, taking into account weight.\nWEIGHT - Allows you to change the weight of a task.")
+    print("\nHELP - Display this list of options.\nTASKS - Displays a list of all stored tasks.\nADD - Allows you to add another task.\nSTRIKE - Remove a task from the list.\nDRAW - Picks a task at random for you to do, taking into account weight.\nWEIGHT - Allows you to change the weight of a task.\n")
 # A function to display all stored tasks, with a label. Indexed, to allow targeted removal
 def print_task(task_list):
     if task_list:
@@ -38,7 +38,7 @@ def print_task(task_list):
 #Add function to add new tasks to the list
 def add_task():
     while True:
-        user_input = input("What task would you like to add? Enter as many as you would like one at a time, then type DONE")
+        user_input = input("What task would you like to add? Enter as many as you would like one at a time, then type DONE\n")
         if user_input == "DONE":
             print("Tasks Added")
             print("-----------")
@@ -76,17 +76,7 @@ valid_options = ["HELP", "TASKS", "ADD", "STRIKE", "DRAW", "WEIGHT"]
 # Have the user add one or multiple tasks, typing DONE when they are finished. 
 
 print("Welcome to Random Task Generator, a task managment and productivity assistant.")
-print("To begin, enter a task that needs to be done.")
-print("Enter as many as you would like, one at a time. When you are finished, type 'DONE'")
-while True:
-    user_input = input()
-    if user_input == "DONE":
-        print("Tasks Added")
-        print("-----------")
-        input("Press enter to continue")
-        break 
-    else:
-        tasks.append(user_input)
+add_task()  
 
 #Core loop. Users can access available functions from here, such as pulling a task, adding a task, checking a help list, etc.
 while True:
@@ -95,7 +85,6 @@ while True:
         HELP()
     elif user_action == "TASKS":
         print_task(tasks)
-        
     elif user_action == "ADD":
         add_task()     
     elif user_action == "STRIKE":
