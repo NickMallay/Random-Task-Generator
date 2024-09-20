@@ -32,20 +32,30 @@ def print_task(task_list):
     if task_list:
         print("Your tasks are as follows: ")
         for index, task in enumerate(task_list, 1):
-            print(f"{index}. {task}")
+            print(f"{index}. {task['task']}")
     else:
         print("There are no tasks stored.")
 #Add function to add new tasks to the list
 def add_task():
     while True:
-        user_input = input("What task would you like to add? Enter as many as you would like one at a time, then type DONE\n")
-        if user_input == "DONE":
+        task_description = input("Enter a task you need done. When you don't have any more tasks to add, type DONE\n")
+        if task_description == "DONE":
             print("Tasks Added")
             print("-----------")
             input("Press enter to continue")
             break 
         else:
-            tasks.append(user_input)
+            while True:
+                try:
+                    task_weight = int(input("How important is this task? (1 = Not super important. 5 = Life or death.)\n"))
+                    if task_weight < 1 or task_weight > 5:
+                        print("Please enter a number between 1 and 5.")
+                    else:
+                        break
+                except:
+                    print("Please enter a number between 1 and 5")
+            tasks.append({"task": task_description, "weight": task_weight})
+            print(f"'{task_description}' has been added with a weight of {task_weight}")
 #Strike function to remove a task from the list
 def STRIKE():
     if not tasks:
