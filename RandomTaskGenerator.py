@@ -8,12 +8,14 @@
 # Users can give or change the weight of a task
 # Display all tasks
 
+#imports
+import random
 
 # The stored list of user tasks. Will be populated by the user on start or during use.
 tasks = []
 # List of valid core loop options
 valid_options = ["HELP", "TASKS", "ADD", "STRIKE", "DRAW", "WEIGHT"]
-# Have the user add one or multiple tasks, typing DONE when they are finished. 
+ 
 
 
 # Function to get a valid input on a question. Valid lists defined above.
@@ -73,6 +75,21 @@ def STRIKE():
         except ValueError:
             print("Please enter a valid number.")
 #Draw function to pull a random card from a weight adjusted list for the user to do
+def DRAW():
+    if not tasks:
+        print("There are not tasks to draw from.")
+        return
+
+    weighted_list = []
+    for task in tasks:
+        weighted_list.extend([task['task']] * task['weight'])
+
+    selected_task = random.choice(weighted_list)
+    print(f"Your random task is: {selected_task}")
+
+
+
+
 #Weight function to change the weight of a task
 def WEIGHT():
     if not tasks:
@@ -104,7 +121,7 @@ def WEIGHT():
 
 
 
-
+# Have the user add one or multiple tasks, typing DONE when they are finished.
 print("Welcome to Random Task Generator, a task managment and productivity assistant.")
 add_task()  
 
@@ -120,7 +137,7 @@ while True:
     elif user_action == "STRIKE":
         STRIKE() 
     elif user_action == "DRAW":
-        print("WIP")  
+        DRAW()  
     elif user_action == "WEIGHT":
         WEIGHT()      
 
