@@ -64,14 +64,24 @@ def STRIKE():
         print("No tasks to remove.")
         return
     
-    print_task(tasks)
     while True:
         try:
+            print_task(tasks)
             task_index = int(input("\nEnter the number of the task you would like to remove.\n"))
             if task_index >= 1 and task_index <= len(tasks):
                 removed_task = tasks.pop(task_index - 1) # -1 to account for default 0 coungting
                 print(f"The task '{removed_task['task']}' has been removed.")
-                break
+                while True:
+                    strike_again = input("Would you like to stike another? (YES / NO)")
+                    if strike_again == "NO":
+                        return
+                    elif strike_again == "YES":
+                        break
+                    else:
+                        print("Please enter YES or NO")
+
+                    
+                
         except ValueError:
             print("Please enter a valid number.")
 #Draw function to pull a random card from a weight adjusted list for the user to do
@@ -86,9 +96,6 @@ def DRAW():
 
     selected_task = random.choice(weighted_list)
     print(f"Your random task is: {selected_task}")
-
-
-
 
 #Weight function to change the weight of a task
 def WEIGHT():
