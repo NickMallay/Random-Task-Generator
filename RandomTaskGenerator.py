@@ -52,7 +52,7 @@ def add_task():
                         print("Please enter a number between 1 and 5.")
                     else:
                         break
-                except:
+                except ValueError:
                     print("Please enter a number between 1 and 5")
             tasks.append({"task": task_description, "weight": task_weight})
             print(f"'{task_description}' has been added with a weight of {task_weight}")
@@ -68,22 +68,42 @@ def STRIKE():
             task_index = int(input("\nEnter the number of the task you would like to remove.\n"))
             if task_index >= 1 and task_index <= len(tasks):
                 removed_task = tasks.pop(task_index - 1) # -1 to account for default 0 coungting
-                print(f" {removed_task} has been removed.")
+                print(f"The task '{removed_task['task']}' has been removed.")
                 break
         except ValueError:
             print("Please enter a valid number.")
-
-
-
-
 #Draw function to pull a random card from a weight adjusted list for the user to do
 #Weight function to change the weight of a task
+def WEIGHT():
+    if not tasks:
+        print("No tasks to change.")
+        return
+    
+    print_task(tasks)
+    print("Enter the number of the task you would like to edit")
+    while True:
+        try:
+            weight_change_index = int(input())
+            if weight_change_index >= 1 and weight_change_index <= len(tasks):
+                while True:
+                    try:
+                        new_weight = int(input("What would you like to change the weight to? (Please enter a number between 1 and 5)"))
+                        if new_weight >= 1 and new_weight <= 5:
+                            tasks[weight_change_index - 1]["weight"] = new_weight
+                            print(f"The task '{tasks[weight_change_index - 1]['task']} has been updated to a weight of {tasks[weight_change_index - 1]['weight']}")
+                            return
+                        else:
+                            print("Please enter a valid number between 1 and 5")
+                    except ValueError:
+                        print("Please enter a valid number.")
+            else:
+                print("Please enter a valid number.")
+        except ValueError:
+            print("Please enter valid number.")
 
-# The stored list of user tasks. Will be populated by the user on start or during use.
-tasks = []
-# List of valid core loop options
-valid_options = ["HELP", "TASKS", "ADD", "STRIKE", "DRAW", "WEIGHT"]
-# Have the user add one or multiple tasks, typing DONE when they are finished. 
+
+
+
 
 print("Welcome to Random Task Generator, a task managment and productivity assistant.")
 add_task()  
@@ -102,5 +122,5 @@ while True:
     elif user_action == "DRAW":
         print("WIP")  
     elif user_action == "WEIGHT":
-        print("WIP")      
+        WEIGHT()      
 
