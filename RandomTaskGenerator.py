@@ -11,6 +11,9 @@
 #imports
 import random #for randomchoice when drawing a tast
 import json #To make save files
+import os
+# Change the working directory to the directory of the script
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # The stored list of user tasks. Will be populated by the user on start or during use.
 tasks = []
@@ -77,6 +80,9 @@ def STRIKE():
                     if strike_again == "NO":
                         return
                     elif strike_again == "YES":
+                        if not tasks:
+                            print("No tasks to remove.")
+                            return
                         break
                     else:
                         print("Please enter YES or NO")
@@ -168,4 +174,5 @@ while True:
     elif user_action == "SAVE":
         save_to_file(tasks)
     elif user_action == "LOAD":
-        load_file()
+        tasks = load_file()
+        
