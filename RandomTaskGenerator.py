@@ -15,7 +15,7 @@ import json #To make save files
 # The stored list of user tasks. Will be populated by the user on start or during use.
 tasks = []
 # List of valid core loop options
-valid_options = ["HELP", "TASKS", "ADD", "STRIKE", "DRAW", "WEIGHT"]
+valid_options = ["HELP", "TASKS", "ADD", "STRIKE", "DRAW", "WEIGHT", "SAVE", "LOAD"]
  
 
 
@@ -132,7 +132,19 @@ def save_to_file(task_list, filename="tasks.json"):
         print("You have saved successfully.")
     except Exception as e:
         print(f"An error has occured while saving '{e}'")
-
+#LOAD function using JSON
+def load_file(filename='tasks.json'):
+    try:
+        with open(filename, "r") as file:
+            task_list = json.load(file)
+            print(f"{filename} has been loaded.")
+            return task_list
+    except FileNotFoundError:
+            print("No save file found.")
+            return
+    except Exception as exception:
+        print(f"An error occurred while loading: {exception}")
+        return
 
 # Have the user add one or multiple tasks, typing DONE when they are finished.
 print("Welcome to Random Task Generator, a task managment and productivity assistant.")
@@ -153,4 +165,7 @@ while True:
         DRAW()  
     elif user_action == "WEIGHT":
         WEIGHT()      
-
+    elif user_action == "SAVE":
+        save_to_file(tasks)
+    elif user_action == "LOAD":
+        load_file()
