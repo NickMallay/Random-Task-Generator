@@ -9,7 +9,8 @@
 # Display all tasks
 
 #imports
-import random
+import random #for randomchoice when drawing a tast
+import json #To make save files
 
 # The stored list of user tasks. Will be populated by the user on start or during use.
 tasks = []
@@ -96,7 +97,6 @@ def DRAW():
 
     selected_task = random.choice(weighted_list)
     print(f"Your random task is: {selected_task}")
-
 #Weight function to change the weight of a task
 def WEIGHT():
     if not tasks:
@@ -124,8 +124,14 @@ def WEIGHT():
                 print("Please enter a valid number.")
         except ValueError:
             print("Please enter valid number.")
-
-
+#SAVE function using JSON
+def save_to_file(task_list, filename="tasks.json"):
+    try:
+        with open(filename, "w") as file:
+            json.dump(task_list, file)
+        print("You have saved successfully.")
+    except Exception as e:
+        print(f"An error has occured while saving '{e}'")
 
 
 # Have the user add one or multiple tasks, typing DONE when they are finished.
