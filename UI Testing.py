@@ -9,21 +9,33 @@ def load():
 #Function to swap between add/remove functionality
 def add_remove_toggled():
     if add_remove_current.get():
-        pass
+        task_entry_label.config(text="Please enter a task that needs to be done.")
+        weight_entry.grid(row=7, column=3)
+        weight_entry_label.grid(row=6,column=3)
+        confirm_button.config(text="Click to add task")
+    else:
+        task_entry_label.config(text="Please enter the number of the task to be deleted.")
+        weight_entry.grid_remove()
+        weight_entry_label.grid_remove()
+        confirm_button.config(text="Click to remove task.")
 #Add a task to the list
 def add():
     feedback_label.config(text=f"{task_entry.get()} added to list with a weight of {weight_entry.get()}.")
 
+
 # UI initialization
 root = tk.Tk()
 root.title("Random Task Generator") # Window title
-root.geometry("600x280") # Window size
+root.geometry("650x500") # Window size
 
 #Variable to track current state of Add/Remove checkbox
 add_remove_current = tk.BooleanVar()
+add_remove_current.set(True)
 
 #A checkbutton that determins if the entry field and button add or remove a task.
-add_remove_checkbox = tk.Checkbutton(root, text="Toggle Add / Remove", variable=add_remove_current)
+
+add_remove_checkbox = tk.Checkbutton(root, text="Toggle Add / Remove", variable=add_remove_current, command=add_remove_toggled)
+add_remove_checkbox.grid(row= 3, column= 3)
 
 
 
@@ -54,5 +66,22 @@ weight_entry.grid(row=7, column=3)
 #A button to commit the changes written above
 confirm_button = tk.Button(root, text="Click to add task", command=add)
 confirm_button.grid(row=8,column=3, pady=10)
+
+
+#Create and display a task display label
+task_display_label = tk.Label(root, text= "Stored Tasks:")
+task_display_label.grid(row=9, column=3, sticky="s" )
+# Create and display a frame to hold a text and scroll widget to show stored tasks
+task_frame = tk.Frame(root)
+task_frame.grid(row=10, column= 3)
+#Create and place a text widjet into the frame to show stored tasks
+task_display = tk.Text(task_frame, wrap=tk.WORD, height=10, width=40, state=tk.DISABLED)
+task_display.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+#Create and place a scrollbar on the right side of the task frame to allow scrolling throuhg long lists of tasks
+task_display_scrollbar = tk.Scrollbar(task_frame, command=task_display.yview)
+task_display_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+# Sets the scrollbar to the proportionally correct position
+task_display.config(yscrollcommand=task_display_scrollbar.set)
+
 # Start the main TK loop
 root.mainloop()
