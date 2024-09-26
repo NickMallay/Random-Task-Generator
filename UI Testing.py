@@ -21,7 +21,43 @@ def add_remove_toggled():
 #Add a task to the list
 def add():
     feedback_label.config(text=f"{task_entry.get()} added to list with a weight of {weight_entry.get()}.")
+#A function to draw another task
 
+#Function to open a help window
+def open_help():
+    #Create a new window
+    help_window = tk.Toplevel(root)
+    help_window.title("Random Task Generator - Help")
+    help_window.geometry("300x200")
+    #Add helpful info about how to use the program
+    help_label = tk.Label(help_window, text="test text")
+    help_label.pack(pady=20)
+    #Add a button to close the popup
+    help_close_button = tk.Button(help_window, text="Close", command=help_window.destroy)
+    help_close_button.pack(pady=50)
+
+#Function to open a help window
+def open_draw():
+    #Create a new window
+    draw_window = tk.Toplevel(root)
+    draw_window.title("Random Task Generator - Draw")
+    draw_window.geometry("300x200")
+
+    #A function to draw another task and display
+    def draw_another():
+        draw_label.config(text="test another draw")
+
+    #Add helpful info about how to use the program
+    draw_label = tk.Label(draw_window, text="test task draw")
+    draw_label.pack(pady=20)
+    #add a button to draw another task
+    draw_another_button = tk.Button(draw_window, text="Draw Another Task", command=draw_another)
+    draw_another_button.pack(pady=0)
+    #Add a button to close the popup
+    draw_close_button = tk.Button(draw_window, text="Close", command=draw_window.destroy)
+    draw_close_button.pack(pady=0)
+
+    
 
 # UI initialization
 root = tk.Tk()
@@ -45,9 +81,11 @@ save_button.grid(row=0, column=1)
 #Load button, to the right of save button
 load_button = tk.Button(root, text="Load", command=load)
 load_button.grid(row=0, column=2)
+
 #feedback Label
 feedback_label = tk.Label(text="")
 feedback_label.grid(row=0, column=3, sticky="nw")
+
 #welcome label
 welcome_label = tk.Label(text="Welcome to Random Task Generator!", font=("Helvetica", 21))
 welcome_label.grid(row=2, column=3, pady= 20)
@@ -82,6 +120,13 @@ task_display_scrollbar = tk.Scrollbar(task_frame, command=task_display.yview)
 task_display_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 # Sets the scrollbar to the proportionally correct position
 task_display.config(yscrollcommand=task_display_scrollbar.set)
+
+# Create and show a button to draw a task randomly
+draw_button = tk.Button(root, text="Draw a task", command=open_draw)
+draw_button.grid(row=11, column=3)
+# Create and show a help button in bottom right corner
+help_button = tk.Button(root, text="?", command=open_help)
+help_button.grid(row=12, column=4, sticky="se")
 
 # Start the main TK loop
 root.mainloop()
