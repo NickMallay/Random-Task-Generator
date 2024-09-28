@@ -1,15 +1,36 @@
-import tkinter as tk
+import tkinter as tk # To build a UI
+import os # To set save directory
+import random # To draw random task
+import json # To make and load save files
 
+# Change the working directory to the directory of the script
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 ###########
 #Functions
 ###########
 
 # Save and load functions for button tests
-def save():
-    feedback_label.config(text="Task list saved.")
-def load():
-    feedback_label.config(text="Task list loaded")
+def save(task_list, filename="task_list.json"):
+    try:
+        with open(filename, "w") as file:
+            json.dump(task_list, file)
+        feedback_label.config(text="Task list saved.")
+    except Exception as e:
+        feedback_label.config(text=f"An error has occured: '{e}'")
+def load(filename="task_list.json"):
+    global task_list
+    try:
+        with open(filename, "r") as file:
+            task_list = json.load(file)
+        feedback_label.config(text="Task list loaded")
+        print_task(task_list)
+    except FileNotFoundError:
+        feedback_label.config(text="No save file found.")
+        return
+    except Exception as exception:
+       feedback_label.config(text=f"An error occurred while loading: {exception}")
+       return
 
 # Function to swap between add/remove functionality
 def add_remove_toggled():
@@ -24,10 +45,6 @@ def add_remove_toggled():
         weight_entry_label.grid_remove()
         confirm_button.config(text="Click to remove task.")
 
-# Add a task to the list
-def add():
-    feedback_label.config(text=f"{task_entry.get()} added to list with a weight of {weight_entry.get()}.")
-
 # Function to open a help window
 def open_help():
     # Create a new window
@@ -38,7 +55,6 @@ def open_help():
     help_label = tk.Label(help_window, text="Click a button below to get info on that topic:")
     help_label.pack(pady=5)
     # A non-editable text box that will display help data
-    help_text_content =""
     help_text = tk.Text(help_window, state="disabled", width= 40, height= 13, wrap=tk.WORD, font=("Helvetica", "9"))
     help_text.pack()
     # Add a frame to hold the help buttons horizontally, used to avoid converting the entire help window to .grid
@@ -109,45 +125,119 @@ def open_draw():
     draw_window.title("Random Task Generator - Draw")
     draw_window.geometry("300x200")
 
-    #A function to draw another task and display
-    def draw_another():
-        draw_label.config(text="test another draw")
+    def random_draw():
+        if not task_list:
+            chosen_task_field.config(state="normal")
+            chosen_task_field.delete("1.0", tk.END)
+            chosen_task_field.insert("1.0","There are no tasks to choose from! Add some or load a file.")
+            chosen_task_field.config(state="disabled")
+        else:
+            weighted_list = []
+            for task in task_list:
+                weighted_list.extend([task['task']] * int(task['weight']))
+            selected_task = random.choice(weighted_list)            
+            chosen_task_field.config(state="normal")
+            chosen_task_field.delete("1.0", tk.END)
+            chosen_task_field.insert("1.0", selected_task)
+            chosen_task_field.config(state="disabled")
 
-    #Add helpful info about how to use the program
-    draw_label = tk.Label(draw_window, text="test task draw")
-    draw_label.pack(pady=20)
+
+    
+    #Add a label announcing the chosen task
+    draw_label = tk.Label(draw_window, text="Your randomly chosen task is:")
+    draw_label.pack(pady=2)
+    #Add a text field to show the chosen task
+    chosen_task_field = tk.Text(draw_window, state="disabled", width= 37, height= 7, wrap=tk.WORD, font=("Helvetica", "9"))
+    chosen_task_field.pack(pady=5)
     #add a button to draw another task
-    draw_another_button = tk.Button(draw_window, text="Draw Another Task", command=draw_another)
+    draw_another_button = tk.Button(draw_window, text="Draw Another Task", command=random_draw)
     draw_another_button.pack(pady=0)
     #Add a button to close the popup
     draw_close_button = tk.Button(draw_window, text="Close", command=draw_window.destroy)
     draw_close_button.pack(pady=0)
+    random_draw()
 
-    
+# Function to display stored tasks in the task text field
+def print_task(task_list):
+    if task_list:
+        task_display.config(state="normal")
+        task_display.delete("1.0", tk.END)
+        for index, task in enumerate(task_list, 1):
+            task_display.insert(tk.END, f"{index}. {task['task']} (Weight: {task['weight']})\n")
+        task_display.config(state="disabled")
+    else:
+        task_display.config(state="normal")
+        task_display.delete("1.0", tk.END)
+        task_display.insert("1.0", "There are no tasks stored! Add some or click load.")
+        task_display.config(state="disabled")
+# A function to add a new task to the list
+def add_task():
+    if task_entry.get() == "" or weight_entry.get() == "":
+       feedback_label.config(text="Please enter a task and task weight.")
+    else:
+        task_description = task_entry.get()
+        task_weight = weight_entry.get()
+        task_list.append({"task": task_description, "weight": task_weight})
+        task_entry.delete(0, tk.END)
+        weight_entry.delete(0, tk.END)
+        feedback_label.config(text=f"'{task_description}' had been added with a weight of '{task_weight}'")
+        print_task(task_list)
+# A function to remove a stored task
+def remove_task():
+    try:
+        #Convert the user input to a number
+        index = int(task_entry.get())
+
+        #Check if the index number is actually in the list
+        if len(task_list) < 1:
+            feedback_label.config(text="There are no tasks to remove!")
+        elif index < 1 or index > len(task_list):
+            feedback_label.config(text=f"Please enter a the number corresponding to the task you want to remove. (1-{len(task_list)})")
+            return
+        else:
+            removed_task = task_list.pop(index - 1)
+            print_task(task_list)
+            feedback_label.config(text=f"{removed_task['task']} has been removed.")
+            task_entry.delete(0, tk.END)
+    except ValueError:
+        feedback_label.config(text="Error. Please enter a valid number.")
+
+# A function to determin if pushing the Confirm Task button is in Add or Remove mode
+def add_or_remove():
+    if add_remove_current.get():
+        add_task()
+    else:
+        remove_task()
+
+#######################
+# LISTS and VARIABLES
+#######################
+task_list = []
+
+
+###########################
+# USER INTERFACE ELEMENTS   
+###########################
 
 # UI initialization
 root = tk.Tk()
 root.title("Random Task Generator") # Window title
 root.geometry("650x500") # Window size
-
 # Variable to track current state of Add/Remove checkbox
 add_remove_current = tk.BooleanVar()
 add_remove_current.set(True)
-
 # A checkbutton that determins if the entry field and button add or remove a task.
- 
 add_remove_checkbox = tk.Checkbutton(root, text="Toggle Add / Remove", variable=add_remove_current, command=add_remove_toggled)
 add_remove_checkbox.grid(row= 3, column= 3)
 
 
 
 # Save button, top left
-save_button = tk.Button(root, text="Save", command=save)
+save_button = tk.Button(root, text="Save", command=lambda: save(task_list))
 save_button.grid(row=0, column=1)
 # Load button, to the right of save button
 load_button = tk.Button(root, text="Load", command=load)
 load_button.grid(row=0, column=2)
-
 # Feedback Label
 feedback_label = tk.Label(text="")
 feedback_label.grid(row=0, column=3, sticky="nw")
@@ -168,7 +258,7 @@ weight_entry_label.grid(row=6,column=3)
 weight_entry = tk.Entry(root, width=5)
 weight_entry.grid(row=7, column=3)
 # A button to commit the changes written above
-confirm_button = tk.Button(root, text="Click to add task", command=add)
+confirm_button = tk.Button(root, text="Click to add task", command=add_or_remove)
 confirm_button.grid(row=8,column=3, pady=10)
 
 
